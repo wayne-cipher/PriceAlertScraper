@@ -1,7 +1,5 @@
 # Laptop Stand Price Tracker
-![](laptopstand.jpg)
 ## Project Overview
-
 This is a Python script designed to monitor the price of a specific laptop stand product on Jumia (a popular e-commerce platform in Kenya) and send an email notification when the price drops below a certain threshold. The script uses web scraping to extract price data, handles basic error scenarios, and automates price checking at regular intervals. This project demonstrates skills in web scraping, automation, email notification systems, and basic Python programming.
 
 ## Features
@@ -19,18 +17,78 @@ This is a Python script designed to monitor the price of a specific laptop stand
   - ***datetime:*** For handling date and time (though not currently utilized in the final code).
   - ***time:*** For pausing execution between price checks.
   - ***smtplib:*** For sending email notifications via Gmail’s SMTP server.
-
+```python
+import requests
+from bs4 import BeautifulSoup
+import time
+import datetime
+import smtplib
+```
 - Tools:
   - Web scraping tools for data extraction.
   - Basic error handling and logging (implicit in the structure).
 
 # Code Structure
 The script consists of two main functions:
-***check_price()***: Scrapes the Jumia product page, extracts the discounted price, converts it to a float, and returns it.
-***send_email()***: Sets up an SMTP connection with Gmail, logs in, and sends an email notification when the price threshold is met.
+1. ***check_price()***: Scrapes the Jumia product page, extracts the discounted price, converts it to a float, and returns it.
+```python
+# Scrapes the price of a laptop stand from Jumia Kenya website and returns the current discounted price as a float
+def check_price():
+    url = 'https://www.jumia.co.ke/qwen-aluminum-alloy-laptop-stand-computer-stand-61956975.html'
+    
+    # Set user agent to mimic a browser request and avoid being blocked
+    headers = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"}
+    page = requests.get(url, headers=headers)
+    soup = BeautifulSoup(page.content, "html.parser")
 
-The main program flow calls ***check_price()*** to get the current price, checks if it’s below or equal to 500, and sends an email if true. It then enters an infinite loop to check the price every 24 hours.
+    # Extract product details using CSS selectors
+    title = soup.find('h1', class_='-fs20 -pts -pbxs').get_text()
+    discounted_price = soup.find('span', class_='-b -ubpt -tal -fs24 -prxs').get_text()
+    initial_price = soup.find('span', class_='-tal -gy5 -lthr -fs16 -pvxs -ubpt').get_text()
+    discount = soup.find('span', class_='bdg _dsct _dyn -mls').get_text()
+    
+    final_price = float (discounted_price[3:])
+    return final_price
+```
+2. ***send_email()***: Sets up an SMTP connection with Gmail, logs in, and sends an email notification when the price threshold is met.
+```python
+# Sends an email notification when the price drops below the target threshold. Uses Gmail's SMTP server to send the email.
+def send_email():
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 465) # Connect to Gmail's SMTP server using SSL
+    server.ehlo()
+    server.login('morrismmusyoki254@gmail.com','yourpassword')
+    
+    subject = "Price Dropped for The Laptop Stand"
+    body = "Grim Ripper, Time to get what's yours, price just dropped for the stand. Right here:https://www.jumia.co.ke/qwen-aluminum-alloy-laptop-stand-computer-stand-61956975.html"
+   
+    # Format the email with subject and body
+    msg = f"Subject: {subject}\n\n{body}"
+    
+    server.sendmail(
+        'GrimRipper@gmail.com',
+        "morrismmusyoki254@gmail.com",
+        msg
+      )
 
+    print("mail sent!!")
+    server.quit()
+```
+The main program flow calls ***check_price()*** to get the current price, checks if it’s below or equal to 500, and sends an email if true. It then enters an infinite loop to check the price every 24 hours as shown below;
+```python
+# Call check_price() and store the result
+final_price = check_price()
+
+if (final_price <= 500):
+    send_email()
+
+# Continuous monitoring loop
+while(True):
+        check_price()
+        time.sleep(86400)
+```
+# Possible Output
+If the condition above is achieved and the price of the Laptop Stand is less than KSh we'll get the following email.
+![](outputmail.png)
 # Limitations and Risks
 1. Web Scraping Risks: The Jumia website may change its HTML structure, breaking the scraping logic (e.g., class names or element IDs). The script uses hardcoded CSS classes, which could fail if the website updates.
 2. Email Security: The Gmail password is hardcoded, which is insecure. For production use, use environment variables, a configuration file, or OAuth2.
