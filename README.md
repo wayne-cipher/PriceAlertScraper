@@ -89,7 +89,7 @@ while(True):
 ```
 # Possible Output
 If the condition above is achieved and the price of the Laptop Stand is less than KSh 500 we'll get the following email.
-![](sample_mail.png)
+![](sample_email.png)
 # Limitations and Risks
 1. Web Scraping Risks: The Jumia website may change its HTML structure, breaking the scraping logic (e.g., class names or element IDs). The script uses hardcoded CSS classes, which could fail if the website updates.
 2. Email Security: The Gmail password is hardcoded, which is insecure. For production use, use environment variables, a configuration file, or OAuth2.
