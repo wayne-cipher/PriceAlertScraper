@@ -1,6 +1,6 @@
 # Laptop Stand Price Tracker
 ## Project Overview
-This is a Python script designed to monitor the price of a specific laptop stand product on Jumia (a popular e-commerce platform in Kenya) and send an email notification when the price drops below a certain threshold. The script uses web scraping to extract price data, handles basic error scenarios, and automates price checking at regular intervals. This project demonstrates skills in web scraping, automation, email notification systems, and basic Python programming.
+This is a Python script designed to monitor the price of a specific ***laptop stand product*** on Jumia (a popular e-commerce platform in Kenya) and send an email notification when the price drops below a certain threshold. The script uses web scraping to extract price data, handles basic error scenarios, and automates price checking at regular intervals. This project demonstrates skills in web scraping, automation, email notification systems, and basic Python programming.
 
 ## Features
 
@@ -87,7 +87,7 @@ while(True):
         time.sleep(86400)
 ```
 # Possible Output
-If the condition above is achieved and the price of the Laptop Stand is less than KSh we'll get the following email.
+If the condition above is achieved and the price of the Laptop Stand is less than KSh 500 we'll get the following email.
 ![](outputmail.png)
 # Limitations and Risks
 1. Web Scraping Risks: The Jumia website may change its HTML structure, breaking the scraping logic (e.g., class names or element IDs). The script uses hardcoded CSS classes, which could fail if the website updates.
